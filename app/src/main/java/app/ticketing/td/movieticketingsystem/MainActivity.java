@@ -5,9 +5,38 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import java.io.InputStream;
+import java.io.Reader;
+import java.math.BigDecimal;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.sql.Array;
+import java.sql.Blob;
+import java.sql.Clob;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.NClob;
+import java.sql.Ref;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.RowId;
+import java.sql.SQLException;
+import java.sql.SQLWarning;
+import java.sql.SQLXML;
+import java.sql.Statement;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.Map;
+
+import javax.xml.transform.Result;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,6 +55,27 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        ConnectionClass connClass = new ConnectionClass();
+        Connection connection = connClass.Connect();
+
+        try {
+            String query = "SELECT * FROM Names";
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            while(resultSet.next()) {
+                System.out.println(resultSet.getString(1) + " "
+                        + resultSet.getString(2));
+            }
+            resultSet.close();
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if (connection != null) try { connection.close(); } catch(Exception e) {}
+        }
     }
 
     @Override
@@ -48,5 +98,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private static Connection getConnection() throws URISyntaxException, SQLException {
+        String dbUrl = "postgres://dpgdlvzhdlgcvc:5fPpVCeSZwmyTHbgLOIrjRYbla@ec2-54-228-183-183.eu-west-1.compute.amazonaws.com:5432/d788vu4ld3efd9";
+        return DriverManager.getConnection(dbUrl);
     }
 }
