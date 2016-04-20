@@ -55,26 +55,22 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-
-        ConnectionClass connClass = new ConnectionClass();
-        Connection connection = connClass.Connect();
-
+        //query example
+        Statement statement = ConnectionClass.GetStatement();
+        if(statement == null)
+            return;
         try {
             String query = "SELECT * FROM Names";
-            Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             while(resultSet.next()) {
                 System.out.println(resultSet.getString(1) + " "
                         + resultSet.getString(2));
             }
             resultSet.close();
+            statement.getConnection().close();
             statement.close();
-            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-        finally {
-            if (connection != null) try { connection.close(); } catch(Exception e) {}
         }
     }
 
