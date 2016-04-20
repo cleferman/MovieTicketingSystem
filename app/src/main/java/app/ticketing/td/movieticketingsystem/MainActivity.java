@@ -76,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
             while (resultSet.next()) {
                 System.out.println(resultSet.getString(1) + " "
                         + resultSet.getString(2));
-                System.out.println("Test pula mea nu stiu");
             }
             resultSet.close();
             statement.getConnection().close();
