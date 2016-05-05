@@ -1,5 +1,10 @@
-package app.ticketing.td.movieticketingsystem;
+package app.ticketing.td.movieticketingsystem.activities;
 
+import app.ticketing.td.movieticketingsystem.ConnectionClass;
+import app.ticketing.td.movieticketingsystem.R;
+import app.ticketing.td.movieticketingsystem.models.Cinema;
+
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -10,46 +15,42 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
-import java.io.InputStream;
-import java.io.Reader;
-import java.math.BigDecimal;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.sql.Array;
-import java.sql.Blob;
-import java.sql.Clob;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.Date;
-import java.sql.DriverManager;
-import java.sql.NClob;
-import java.sql.Ref;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.RowId;
-import java.sql.SQLException;
-import java.sql.SQLWarning;
-import java.sql.SQLXML;
-import java.sql.Statement;
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.Map;
 
-import javax.xml.transform.Result;
+import java.sql.Connection;
+
+import java.sql.DriverManager;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    public final static String SELECTED_CINEMA_NAME = "app.ticketing.td.movieticketingsystem.SELECTED_CINEMA_NAME";
+    public final static String SELECTED_CINEMA_ID = "app.ticketing.td.movieticketingsystem.SELECTED_CINEMA_ID";
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     private GoogleApiClient client;
+    private Spinner DropDown_Cinema;
+    private Button Button_Next;
+    private int CinemaID;
+    private String CinemaName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,24 +59,60 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        List<Cinema> cinemas = getCinemasFromDatabase();
+
+        DropDown_Cinema = (Spinner)findViewById(R.id.DropDown_Cinemas);
+        ArrayAdapter<Cinema> adapter = new ArrayAdapter<Cinema>(MainActivity.this, android.R.layout.simple_spinner_dropdown_item, cinemas);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        DropDown_Cinema.setAdapter(adapter);
+        DropDown_Cinema.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Cinema cinema = (Cinema)adapterView.getItemAtPosition(i);
+                CinemaID = cinema.getID();
+                CinemaName = cinema.getName();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                Cinema cinema = (Cinema)adapterView.getItemAtPosition(0);
+                CinemaID = cinema.getID();
+                CinemaName = cinema.getName();
             }
         });
+
+        Button_Next = (Button)findViewById(R.id.Button_Next);
+        Button_Next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, MoviesActivity.class);
+                intent.putExtra(SELECTED_CINEMA_NAME, CinemaName);
+                intent.putExtra(SELECTED_CINEMA_ID, CinemaID);
+                startActivity(intent);
+            }
+        });
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+    }
+
+    private List<Cinema> getCinemasFromDatabase() {
+        ArrayList<Cinema> cinemas = new ArrayList<Cinema>();
+
         //query example
         Statement statement = ConnectionClass.GetStatement();
         if (statement == null)
-            return;
+            return null;
         try {
-            String query = "SELECT * FROM Names";
+            String query = "SELECT * FROM Cinemas";
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
-                System.out.println(resultSet.getString(1) + " "
-                        + resultSet.getString(2));
+                Cinema cinema = new Cinema();
+                cinema.setID(resultSet.getInt(1));
+                cinema.setName(resultSet.getString(2));
+
+                cinemas.add(cinema);
             }
             resultSet.close();
             statement.getConnection().close();
@@ -83,9 +120,8 @@ public class MainActivity extends AppCompatActivity {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
+        return cinemas;
     }
 
     @Override
@@ -133,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
                 Uri.parse("android-app://app.ticketing.td.movieticketingsystem/http/host/path")
         );
         AppIndex.AppIndexApi.start(client, viewAction);
+
     }
 
     @Override

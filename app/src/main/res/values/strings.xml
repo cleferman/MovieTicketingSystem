@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">MovieTicketingSystem</string>
     <string name="action_settings">Settings</string>
+    <string name="selectCinema">Please select a cinema:</string>
+    <string name="buttonNext">Next</string>
+    <string name="availableMovies">Available movies in cinema</string>
+    <string name="buttonBack">Back</string>
 </resources>
