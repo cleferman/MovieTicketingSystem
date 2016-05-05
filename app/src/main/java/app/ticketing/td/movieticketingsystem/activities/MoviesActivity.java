@@ -19,28 +19,33 @@ import java.util.List;
 
 import app.ticketing.td.movieticketingsystem.ConnectionClass;
 import app.ticketing.td.movieticketingsystem.R;
+import app.ticketing.td.movieticketingsystem.models.Cinema;
 import app.ticketing.td.movieticketingsystem.models.Movie;
 
 public class MoviesActivity extends AppCompatActivity {
+
+    //region KEYS
+    public final static String SELECTED_MOVIE= "app.ticketing.td.movieticketingsystem.SELECTED_MOVIE";
+    //endregion
 
     private TextView TextView_AvailableMovies;
     private Spinner DropDown_Movies;
     private Button Button_Back;
     private Button Button_Next;
-
+    private Movie selectedMovie;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movies);
 
         Intent intent = getIntent();
-        String selectedCinema = intent.getStringExtra(MainActivity.SELECTED_CINEMA_NAME);
-        int selectedCinemaId = intent.getIntExtra(MainActivity.SELECTED_CINEMA_ID, 0);
+        Cinema selectedCinema = intent.getParcelableExtra(MainActivity.SELECTED_CINEMA);
+
         //section for finding controls
-        TextView_AvailableMovies = (TextView)findViewById(R.id.TextView_AvailableMovies);
+        TextView_AvailableMovies = (TextView) findViewById(R.id.TextView_AvailableMovies);
         DropDown_Movies = (Spinner) findViewById(R.id.DropDown_Movies);
-        Button_Back = (Button)findViewById(R.id.Button_Back);
-        Button_Next = (Button)findViewById(R.id.Button_Next);
+        Button_Back = (Button) findViewById(R.id.Button_Back);
+        Button_Next = (Button) findViewById(R.id.Button_Next);
 
         //rest of the code
         Button_Back.setOnClickListener(new View.OnClickListener() {
@@ -60,8 +65,8 @@ public class MoviesActivity extends AppCompatActivity {
         });
 
         TextView_AvailableMovies.setText(TextView_AvailableMovies.getText() + " " + selectedCinema);
-        List<Movie> movies = getMoviesFromDatabase(selectedCinemaId);
-        if(movies.size() > 0) {
+        List<Movie> movies = getMoviesFromDatabase(selectedCinema.getID());
+        if (movies.size() > 0) {
             ArrayAdapter<Movie> adapter = new ArrayAdapter<Movie>(MoviesActivity.this, android.R.layout.simple_spinner_dropdown_item, movies);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             DropDown_Movies.setAdapter(adapter);
@@ -69,21 +74,21 @@ public class MoviesActivity extends AppCompatActivity {
             DropDown_Movies.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
+                    selectedMovie = (Movie) adapterView.getItemAtPosition(i);
                 }
 
                 @Override
                 public void onNothingSelected(AdapterView<?> adapterView) {
-
+                    selectedMovie = (Movie) adapterView.getItemAtPosition(0);
                 }
             });
-        }
-        else {
-            TextView_AvailableMovies.setText("No available movies for cinema " + selectedCinema);
+        } else {
+            TextView_AvailableMovies.setText("No available movies for cinema " + selectedCinema.getName());
             DropDown_Movies.setVisibility(View.INVISIBLE);
         }
     }
 
+    //region PRIVATE MEMBERS
     private List<Movie> getMoviesFromDatabase(int id) {
         ArrayList<Movie> movies = new ArrayList<Movie>();
         //query example
@@ -110,8 +115,7 @@ public class MoviesActivity extends AppCompatActivity {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        return  movies;
+        return movies;
     }
-
+    //endregion
 }

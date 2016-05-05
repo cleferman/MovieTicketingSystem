@@ -9,9 +9,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-/**
- * Created by cosmi on 4/17/2016.
- */
 public class ConnectionClass {
     private static final String connectionString = "jdbc:jtds:sqlserver://movieticketing.database.windows.net:1433/MovieTicketingDB;user=cosmin.leferman@movieticketing;password=Laptari3cola;";
 
@@ -31,14 +28,11 @@ public class ConnectionClass {
         try {
             Class.forName("net.sourceforge.jtds.jdbc.Driver").newInstance();
             conn = DriverManager.getConnection(connectionString);
-        }
-        catch(SQLException ex) {
+        } catch (SQLException ex) {
             Log.e("ERROR ", ex.getMessage());
-        }
-        catch(ClassNotFoundException ex) {
+        } catch (ClassNotFoundException ex) {
             Log.e("ERROR", ex.getMessage());
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Log.e("ERROR", ex.getMessage());
         }
 
