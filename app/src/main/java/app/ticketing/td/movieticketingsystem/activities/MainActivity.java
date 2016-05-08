@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
 
     //region PRIVATE MEMBERS
     private List<Cinema> getCinemasFromDatabase() {
-        ArrayList<Cinema> cinemas = new ArrayList<Cinema>();
+        List<Cinema> cinemas = new ArrayList<Cinema>();
 
         //query example
         Statement statement = ConnectionClass.GetStatement();

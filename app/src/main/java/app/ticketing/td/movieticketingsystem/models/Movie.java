@@ -5,41 +5,19 @@ import android.os.Parcelable;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.util.List;
 
 public class Movie implements Parcelable {
 
     private int ID;
     private String Name;
-    private int IDCinema;
-    private static Time Ora;
-    public static Date Data;
+    private int CinemaID;
     private int Room;
-
-    protected Movie(Parcel in) {
-        ID = in.readInt();
-        Name = in.readString();
-        IDCinema = in.readInt();
-        Room = in.readInt();
-    }
+    private String Description;
 
     public Movie() {
 
     }
-
-    public static final Creator<Movie> CREATOR = new Creator<Movie>() {
-        @Override
-        public Movie createFromParcel(Parcel in) {
-            Movie movie = new Movie(in);
-            movie.setData(new Date(in.readLong()));
-            movie.setOra(new Time(in.readLong()));
-            return movie;
-        }
-
-        @Override
-        public Movie[] newArray(int size) {
-            return new Movie[size];
-        }
-    };
 
     public void setID(int ID) {
         this.ID = ID;
@@ -49,12 +27,12 @@ public class Movie implements Parcelable {
         return this.ID;
     }
 
-    public void setIDCinema(int IDCinema) {
-        this.IDCinema = IDCinema;
+    public void setCinemaID(int CinemaID) {
+        this.CinemaID = CinemaID;
     }
 
-    public int getIDCinema() {
-        return this.IDCinema;
+    public int getCinemaID() {
+        return this.CinemaID;
     }
 
     public void setRoom(int Room) {
@@ -73,25 +51,25 @@ public class Movie implements Parcelable {
         return this.Name;
     }
 
-    public void setData(Date Data) {
-        this.Data = Data;
+    public void setDescription(String description) {
+        Description = description;
     }
 
-    public Date getData() {
-        return this.Data;
-    }
-
-    public void setOra(Time Ora) {
-        this.Ora = Ora;
-    }
-
-    public Time getOra() {
-        return this.Ora;
+    public String getDescription() {
+        return Description;
     }
 
     @Override
     public String toString() {
         return Name;
+    }
+
+    protected Movie(Parcel in) {
+        ID = in.readInt();
+        Name = in.readString();
+        CinemaID = in.readInt();
+        Room = in.readInt();
+        Description = in.readString();
     }
 
     @Override
@@ -100,12 +78,24 @@ public class Movie implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(ID);
-        parcel.writeString(Name);
-        parcel.writeInt(IDCinema);
-        parcel.writeInt(Room);
-        parcel.writeSerializable(Data.getTime());
-        parcel.writeSerializable(Ora.getTime());
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(ID);
+        dest.writeString(Name);
+        dest.writeInt(CinemaID);
+        dest.writeInt(Room);
+        dest.writeString(Description);
     }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 }

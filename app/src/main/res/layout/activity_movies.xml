@@ -24,11 +24,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/DropDown_Movies"
-        android:layout_below="@+id/TextView_AvailableMovies"
-        android:layout_alignRight="@+id/TextView_AvailableMovies"
-        android:layout_alignEnd="@+id/TextView_AvailableMovies"
         android:layout_marginTop="45dp"
-        android:spinnerMode="dropdown" />
+        android:spinnerMode="dropdown"
+        android:layout_below="@+id/TextView_AvailableMovies"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -47,4 +47,25 @@
         android:layout_alignTop="@+id/Button_Back"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/DropDown_SelectDate"
+        android:layout_below="@+id/DropDown_Movies"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:spinnerMode="dropdown"
+        android:visibility="invisible" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/DropDown_SelectTime"
+        android:layout_below="@+id/DropDown_SelectDate"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:spinnerMode="dropdown"
+        android:visibility="invisible" />
+
 </RelativeLayout>
