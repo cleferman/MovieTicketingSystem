@@ -3,10 +3,6 @@ package app.ticketing.td.movieticketingsystem.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.sql.Date;
-import java.sql.Time;
-import java.util.List;
-
 public class Movie implements Parcelable {
 
     private int ID;
@@ -19,6 +15,27 @@ public class Movie implements Parcelable {
 
     }
 
+    protected Movie(Parcel in) {
+        ID = in.readInt();
+        Name = in.readString();
+        CinemaID = in.readInt();
+        Room = in.readInt();
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
+
+    //region GETTERS/SETTERS
     public void setID(int ID) {
         this.ID = ID;
     }
@@ -51,25 +68,17 @@ public class Movie implements Parcelable {
         return this.Name;
     }
 
-    public void setDescription(String description) {
-        Description = description;
-    }
-
     public String getDescription() {
         return Description;
     }
 
+    public void setDescription(String description) {
+        Description = description;
+    }
+    //endregion
     @Override
     public String toString() {
         return Name;
-    }
-
-    protected Movie(Parcel in) {
-        ID = in.readInt();
-        Name = in.readString();
-        CinemaID = in.readInt();
-        Room = in.readInt();
-        Description = in.readString();
     }
 
     @Override
@@ -83,19 +92,5 @@ public class Movie implements Parcelable {
         dest.writeString(Name);
         dest.writeInt(CinemaID);
         dest.writeInt(Room);
-        dest.writeString(Description);
     }
-
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
-        @Override
-        public Movie createFromParcel(Parcel in) {
-            return new Movie(in);
-        }
-
-        @Override
-        public Movie[] newArray(int size) {
-            return new Movie[size];
-        }
-    };
 }

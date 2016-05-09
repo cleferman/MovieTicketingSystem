@@ -76,6 +76,9 @@ public class MainActivity extends AppCompatActivity {
         Button_Next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(!validateForm())
+                    return;
+
                 Intent intent = new Intent(MainActivity.this, MoviesActivity.class);
                 intent.putExtra(SELECTED_CINEMA, cinema);
                 startActivity(intent);
@@ -106,6 +109,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //region PRIVATE MEMBERS
+    private boolean validateForm() {
+        boolean isValid = false;
+
+        View moviesSelectedView = DropDown_Cinema.getSelectedView();
+        if (moviesSelectedView != null && moviesSelectedView instanceof TextView) {
+            TextView selectedTextView = (TextView) moviesSelectedView;
+            if (selectedTextView.getText().equals("Please select...") || selectedTextView.getVisibility() == View.INVISIBLE) {
+                String errorString = getResources().getString(R.string.nothingSelectedError);
+                selectedTextView.setError(errorString);
+                isValid = false;
+            }
+            else {
+                selectedTextView.setError(null);
+                isValid = true;
+            }
+        }
+
+        return isValid;
+    }
+
     private List<Cinema> getCinemasFromDatabase() {
         List<Cinema> cinemas = new ArrayList<Cinema>();
 
