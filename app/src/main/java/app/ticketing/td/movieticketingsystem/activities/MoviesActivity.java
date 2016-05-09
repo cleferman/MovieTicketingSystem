@@ -3,7 +3,6 @@ package app.ticketing.td.movieticketingsystem.activities;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -104,7 +103,6 @@ public class MoviesActivity extends AppCompatActivity {
                         }
                     }
                     iCurrentSelection = i;
-
                 }
 
                 @Override
@@ -213,6 +211,7 @@ public class MoviesActivity extends AppCompatActivity {
             timesResultSet = statement.executeQuery(query);
             while(timesResultSet.next()) {
                 MovieTime movieTime = new MovieTime();
+                movieTime.setMovieID(timesResultSet.getInt(1));
                 movieTime.setMovieTime(timesResultSet.getTime(2));
                 movieTimes.add(movieTime);
             }
@@ -234,6 +233,7 @@ public class MoviesActivity extends AppCompatActivity {
             datesResultSet = statement.executeQuery(query);
             while(datesResultSet.next()) {
                 MovieDate movieDate = new MovieDate();
+                movieDate.setMovieID(datesResultSet.getInt(1));
                 movieDate.setMovieDate(datesResultSet.getDate(2));
                 movieDates.add(movieDate);
             }

@@ -10,19 +10,19 @@ public class MovieDate implements Parcelable {
     private int MovieID;
     private Date MovieDate;
 
-    protected MovieDate(Parcel in) {
-    }
-
     public MovieDate() {
 
+    }
+
+    protected MovieDate(Parcel in) {
+        MovieID = in.readInt();
+        MovieDate = new Date(in.readLong());
     }
 
     public static final Creator<MovieDate> CREATOR = new Creator<MovieDate>() {
         @Override
         public MovieDate createFromParcel(Parcel in) {
-            MovieDate movieDate = new MovieDate(in);
-            movieDate.MovieDate = new Date(in.readLong());
-            return movieDate;
+            return new MovieDate(in);
         }
 
         @Override
@@ -31,17 +31,7 @@ public class MovieDate implements Parcelable {
         }
     };
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(MovieID);
-        parcel.writeSerializable(MovieDate);
-    }
-
+    //region GETTERS/SETTERS
     public int getMovieID() {
         return MovieID;
     }
@@ -56,6 +46,18 @@ public class MovieDate implements Parcelable {
 
     public void setMovieDate(Date movieDate) {
         MovieDate = movieDate;
+    }
+    //endregion
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(MovieID);
+        parcel.writeLong(MovieDate.getTime());
     }
 
     @Override

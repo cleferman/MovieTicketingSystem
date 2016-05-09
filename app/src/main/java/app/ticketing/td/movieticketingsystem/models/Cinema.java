@@ -27,7 +27,7 @@ public class Cinema implements Parcelable {
             return new Cinema[size];
         }
     };
-
+    //region GETTERS/SETTERS
     public void setID(int ID) {
         this.ID = ID;
     }
@@ -48,6 +48,7 @@ public class Cinema implements Parcelable {
     public String toString() {
         return Name;
     }
+    //endregion
 
     @Override
     public int describeContents() {

@@ -5,27 +5,24 @@ import android.os.Parcelable;
 
 import java.sql.Time;
 
-/**
- * Created by cosmi on 5/7/2016.
- */
 public class MovieTime implements Parcelable{
 
     private int MovieID;
     private Time MovieTime;
 
-    protected MovieTime(Parcel in) {
-        MovieID = in.readInt();
-    }
     public MovieTime() {
 
+    }
+
+    protected MovieTime(Parcel in) {
+        MovieID = in.readInt();
+        MovieTime = new Time(in.readLong());
     }
 
     public static final Creator<MovieTime> CREATOR = new Creator<MovieTime>() {
         @Override
         public MovieTime createFromParcel(Parcel in) {
-            MovieTime movieTime = new MovieTime(in);
-            movieTime.setMovieTime(new Time(in.readLong()));
-            return movieTime;
+            return new MovieTime(in);
         }
 
         @Override
@@ -34,6 +31,7 @@ public class MovieTime implements Parcelable{
         }
     };
 
+    //region GETTERS/SETTERS
     public Time getMovieTime() {
         return MovieTime;
     }
@@ -49,6 +47,7 @@ public class MovieTime implements Parcelable{
     public void setMovieID(int movieID) {
         MovieID = movieID;
     }
+    //endregion
 
     @Override
     public int describeContents() {
@@ -58,7 +57,7 @@ public class MovieTime implements Parcelable{
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeInt(MovieID);
-        parcel.writeSerializable(MovieTime.getTime());
+        parcel.writeLong(MovieTime.getTime());
     }
 
     @Override
