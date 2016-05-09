@@ -59,7 +59,6 @@ public class MoviesActivity extends AppCompatActivity {
         Button_Back = (Button) findViewById(R.id.Button_Back);
         Button_Next = (Button) findViewById(R.id.Button_Next);
 
-
         Button_Back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -71,6 +70,9 @@ public class MoviesActivity extends AppCompatActivity {
         Button_Next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(!validateForm())
+                    return;
+
                 Intent intent = new Intent(MoviesActivity.this, SeatsActivity.class);
                 intent.putExtra(SELECTED_MOVIE, selectedMovie);
                 intent.putExtra(SELECTED_DATE, selectedDate);
@@ -114,6 +116,54 @@ public class MoviesActivity extends AppCompatActivity {
             TextView_AvailableMovies.setText("No available movies for cinema " + selectedCinema.getName());
             DropDown_Movies.setVisibility(View.INVISIBLE);
         }
+    }
+
+    //region PRIVATE MEMBERS
+    private boolean validateForm() {
+        boolean isValid = false;
+
+        View moviesSelectedView = DropDown_Movies.getSelectedView();
+        if (moviesSelectedView != null && moviesSelectedView instanceof TextView) {
+            TextView selectedTextView = (TextView) moviesSelectedView;
+            if (selectedTextView.getText().equals("Please select...") || selectedTextView.getVisibility() == View.INVISIBLE) {
+                String errorString = getResources().getString(R.string.nothingSelectedError);
+                selectedTextView.setError(errorString);
+                isValid = false;
+            }
+            else {
+                selectedTextView.setError(null);
+                isValid = true;
+            }
+        }
+
+        View dateSelectedView = DropDown_SelectDate.getSelectedView();
+        if (dateSelectedView != null && dateSelectedView instanceof TextView) {
+            TextView selectedTextView = (TextView) dateSelectedView;
+            if (selectedTextView.getText().equals("Please select...") || selectedTextView.getVisibility() == View.INVISIBLE) {
+                String errorString = getResources().getString(R.string.nothingSelectedError);
+                selectedTextView.setError(errorString);
+                isValid = false;
+            }
+            else {
+                selectedTextView.setError(null);
+                isValid = true;
+            }
+        }
+
+        View timeSelectedView = DropDown_SelectTime.getSelectedView();
+        if (timeSelectedView != null && timeSelectedView instanceof TextView) {
+            TextView selectedTextView = (TextView) timeSelectedView;
+            if (selectedTextView.getText().equals("Please select...") || selectedTextView.getVisibility() == View.INVISIBLE) {
+                String errorString = getResources().getString(R.string.nothingSelectedError);
+                selectedTextView.setError(errorString);
+                isValid = false;
+            }
+            else {
+                selectedTextView.setError(null);
+                isValid = true;
+            }
+        }
+        return isValid;
     }
 
     private void dateSpinner(Movie movie) {
@@ -168,7 +218,6 @@ public class MoviesActivity extends AppCompatActivity {
         });
     }
 
-    //region PRIVATE MEMBERS
     private List<Movie> getMoviesFromDatabase(int id) {
         List<Movie> movies = new ArrayList<Movie>();
         //query example
@@ -221,6 +270,7 @@ public class MoviesActivity extends AppCompatActivity {
 
         return movieTimes;
     }
+
     private List<MovieDate> getMovieDates(int id) {
         Statement statement = ConnectionClass.GetStatement();
         if(statement == null)

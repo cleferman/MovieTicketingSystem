@@ -6,4 +6,5 @@
     <string name="availableMovies">Available movies in cinema</string>
     <string name="buttonBack">Back</string>
     <string name="seatsTitle">Choose your seat(s)</string>
+    <string name="nothingSelectedError">Nothing selected</string>
 </resources>
