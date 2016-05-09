@@ -17,7 +17,7 @@ public class SeatsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_seats);
 
         Intent intent = getIntent();
-        final Movie movie = intent.getParcelableExtra(MoviesActivity.SELECTED_MOVIE);
+        final Movie selectedMovie = intent.getParcelableExtra(MoviesActivity.SELECTED_MOVIE);
         final MovieDate selectedDate = intent.getParcelableExtra(MoviesActivity.SELECTED_DATE);
         final MovieTime selectedTime = intent.getParcelableExtra(MoviesActivity.SELECTED_TIME);
 
