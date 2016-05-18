@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class ConnectionClass {
-    private static final String connectionString = "jdbc:jtds:sqlserver://movieticketing.database.windows.net:1433/MovieTicketingDB;user=cosmin.leferman@movieticketing;password=Laptari3cola;";
+    private static final String connectionString = "jdbc:jtds:sqlserver://movieticketingserver.database.windows.net:1433/MovieTicketingDB;user=cosmin.leferman@movieticketingserver;password=Laptari3cola;";
 
     public static Statement GetStatement() {
         try {

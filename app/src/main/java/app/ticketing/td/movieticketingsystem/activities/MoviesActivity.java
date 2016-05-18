@@ -264,6 +264,9 @@ public class MoviesActivity extends AppCompatActivity {
                 movieTime.setMovieTime(timesResultSet.getTime(2));
                 movieTimes.add(movieTime);
             }
+            timesResultSet.close();
+            statement.getConnection().close();
+            statement.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -287,6 +290,9 @@ public class MoviesActivity extends AppCompatActivity {
                 movieDate.setMovieDate(datesResultSet.getDate(2));
                 movieDates.add(movieDate);
             }
+            datesResultSet.close();
+            statement.getConnection().close();
+            statement.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
