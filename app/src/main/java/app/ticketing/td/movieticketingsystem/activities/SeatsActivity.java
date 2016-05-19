@@ -6,14 +6,12 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.widget.Toast;
 
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -25,16 +23,19 @@ import java.util.List;
 
 import app.ticketing.td.movieticketingsystem.ConnectionClass;
 import app.ticketing.td.movieticketingsystem.R;
+import app.ticketing.td.movieticketingsystem.models.Cinema;
 import app.ticketing.td.movieticketingsystem.models.Movie;
 import app.ticketing.td.movieticketingsystem.models.MovieDate;
 import app.ticketing.td.movieticketingsystem.models.MovieTime;
 import app.ticketing.td.movieticketingsystem.models.Seat;
 
 public class SeatsActivity extends AppCompatActivity {
+    public final static String SELECTED_SEATS = "app.ticketing.td.movieticketingsystem.SELECTED_SEATS";
 
-    private List<Seat> selectedSeats = new ArrayList<Seat>();
+    private ArrayList<Seat> selectedSeats = new ArrayList<Seat>();
     private Button Button_Back;
     private Button Button_Next;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +45,7 @@ public class SeatsActivity extends AppCompatActivity {
         final Movie selectedMovie = intent.getParcelableExtra(MoviesActivity.SELECTED_MOVIE);
         final MovieDate selectedDate = intent.getParcelableExtra(MoviesActivity.SELECTED_DATE);
         final MovieTime selectedTime = intent.getParcelableExtra(MoviesActivity.SELECTED_TIME);
-
+        final Cinema selectedCinema = intent.getParcelableExtra(MainActivity.SELECTED_CINEMA);
 
         Button_Back = (Button) findViewById(R.id.Button_Back);
         Button_Next = (Button) findViewById(R.id.Button_Next);
@@ -53,6 +54,7 @@ public class SeatsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(SeatsActivity.this, MoviesActivity.class);
+                intent.putExtra(MainActivity.SELECTED_CINEMA, selectedCinema);
                 startActivity(intent);
                 finish();
             }
@@ -60,15 +62,24 @@ public class SeatsActivity extends AppCompatActivity {
         Button_Next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(selectedSeats != null) {
+                if (selectedSeats.size() > 0) {
                     AsyncTask.execute(new Runnable() {
                         @Override
                         public void run() {
                             updateSeats(selectedSeats);
                         }
                     });
-                    //Intent intent = new Intent(SeatsActivity.this, MoviesActivity.class);
-                    //startActivity(intent);
+
+                    Intent intent = new Intent(SeatsActivity.this, ConfirmationActivity.class);
+                    intent.putParcelableArrayListExtra(SELECTED_SEATS, selectedSeats);
+                    intent.putExtra(MainActivity.SELECTED_CINEMA, selectedCinema);
+                    intent.putExtra(MoviesActivity.SELECTED_MOVIE, selectedMovie);
+                    intent.putExtra(MoviesActivity.SELECTED_DATE, selectedDate);
+                    intent.putExtra(MoviesActivity.SELECTED_TIME, selectedTime);
+                    startActivity(intent);
+                }
+                else {
+                    Toast.makeText(SeatsActivity.this, "Please select at least a seat.", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -110,12 +121,22 @@ public class SeatsActivity extends AppCompatActivity {
                         }
                         if (!isTemporarySelected) {
                             seat.setTaken(true);
-                            selectedSeats.add(seat);
+                            if (selectedSeats.size() == 0) {
+                                selectedSeats.add(seat);
+                            }
+                            boolean isDifferentSeat = false;
+                            for (int i = 0; i < selectedSeats.size(); i++) {
+                                    isDifferentSeat = selectedSeats.get(i).getId() != seat.getId();
+                            }
+                            if(isDifferentSeat)
+                                selectedSeats.add(seat);
+
                             btnSeat.setImageResource(R.drawable.common_ic_googleplayservices);
                             isTemporarySelected = true;
                         } else {
                             seat.setTaken(false);
                             btnSeat.setImageResource(R.mipmap.seat_front);
+                            selectedSeats.remove(seat);
                             isTemporarySelected = false;
                         }
                     }
@@ -139,12 +160,13 @@ public class SeatsActivity extends AppCompatActivity {
             seatsResultSet = statement.executeQuery(query);
             while (seatsResultSet.next()) {
                 Seat seat = new Seat();
-                seat.setRoomID(seatsResultSet.getInt(1));
-                seat.setSeatRow(seatsResultSet.getInt(2));
-                seat.setSeatColumn(seatsResultSet.getInt(3));
-                seat.setTaken(seatsResultSet.getBoolean(4));
-                seat.setMovieDate(seatsResultSet.getDate(5));
-                seat.setMovieTime(seatsResultSet.getTime(6));
+                seat.setId(seatsResultSet.getInt(1));
+                seat.setRoomID(seatsResultSet.getInt(2));
+                seat.setSeatRow(seatsResultSet.getInt(3));
+                seat.setSeatColumn(seatsResultSet.getInt(4));
+                seat.setTaken(seatsResultSet.getBoolean(5));
+                seat.setMovieDate(seatsResultSet.getDate(6));
+                seat.setMovieTime(seatsResultSet.getTime(7));
                 seats.add(seat);
             }
             seatsResultSet.close();
@@ -161,17 +183,20 @@ public class SeatsActivity extends AppCompatActivity {
         Statement statement = ConnectionClass.GetStatement();
         if (statement == null)
             return;
-        for(Seat seat : seats) {
+        for (Seat seat : seats) {
             int binaryValue = (seat.isTaken()) ? 1 : 0;
-            String query = "UPDATE Seats SET IsTaken = " + binaryValue + " WHERE RoomID = 11"; //SeatID to be added
+            String query = "UPDATE Seats SET IsTaken = " + binaryValue + " WHERE Id = " + seat.getId(); //SeatID to be added
             try {
                 statement.executeUpdate(query);
-
-                statement.getConnection().close();
-                statement.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+        }
+        try {
+            statement.getConnection().close();
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
     //endregion
