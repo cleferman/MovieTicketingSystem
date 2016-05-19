@@ -30,7 +30,8 @@
 
         <activity android:name=".activities.MoviesActivity" />
         <activity android:name=".activities.seatsActivity" />
-        <activity android:name=".activities.SeatsActivity"></activity>
+        <activity android:name=".activities.SeatsActivity" />
+        <activity android:name=".activities.ConfirmationActivity"></activity>
     </application>
 
 </manifest>

@@ -49,6 +49,7 @@ public class MoviesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movies);
 
         Intent intent = getIntent();
+
         final Cinema selectedCinema = intent.getParcelableExtra(MainActivity.SELECTED_CINEMA);
 
         //section for finding controls
@@ -77,6 +78,7 @@ public class MoviesActivity extends AppCompatActivity {
                 intent.putExtra(SELECTED_MOVIE, selectedMovie);
                 intent.putExtra(SELECTED_DATE, selectedDate);
                 intent.putExtra(SELECTED_TIME, selectedTime);
+                intent.putExtra(MainActivity.SELECTED_CINEMA, selectedCinema);
                 startActivity(intent);
             }
         });
