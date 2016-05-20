@@ -18,19 +18,20 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/selectCinema"
         android:id="@+id/textView"
+        android:layout_marginTop="53dp"
+        android:gravity="center"
         android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="49dp" />
+        android:layout_centerHorizontal="true" />
 
     <Spinner
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/DropDown_Cinemas"
+        android:spinnerMode="dropdown"
+        android:gravity="center"
         android:layout_below="@+id/textView"
-        android:layout_alignRight="@+id/textView"
-        android:layout_alignEnd="@+id/textView"
-        android:spinnerMode="dropdown" />
+        android:layout_alignLeft="@+id/textView"
+        android:layout_alignStart="@+id/textView" />
 
     <Button
         android:layout_width="wrap_content"
