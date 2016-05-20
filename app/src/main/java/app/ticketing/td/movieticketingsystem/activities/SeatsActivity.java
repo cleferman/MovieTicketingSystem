@@ -6,9 +6,12 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.Toast;
@@ -91,8 +94,6 @@ public class SeatsActivity extends AppCompatActivity {
         TableRow tableRow = null;
         int oldSeatRow = 0;
         for (final Seat seat : seats) {
-            if (seat.getSeatColumn() == 5)
-                layout.addView(tableRow);
             if (oldSeatRow != seat.getSeatRow()) {
                 tableRow = new TableRow(this);
                 tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT));
@@ -115,14 +116,13 @@ public class SeatsActivity extends AppCompatActivity {
 
                     @Override
                     public void onClick(View view) {
-                        btnSeat.getId();
                         if (isTaken) {
                             return;
                         }
                         if (!isTemporarySelected) {
                             seat.setTaken(true);
                             if (selectedSeats.size() == 0) {
-                                selectedSeats.add(seat);
+                                    selectedSeats.add(seat);
                             }
                             boolean isDifferentSeat = false;
                             for (int i = 0; i < selectedSeats.size(); i++) {
@@ -143,6 +143,8 @@ public class SeatsActivity extends AppCompatActivity {
                 });
                 tableRow.addView(btnSeat);
             }
+            if (seat.getSeatColumn() == 5)
+                layout.addView(tableRow);
             oldSeatRow = seat.getSeatRow();
         }
     }
