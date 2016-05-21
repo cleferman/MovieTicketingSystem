@@ -90,6 +90,14 @@ public class SeatsActivity extends AppCompatActivity {
         List<Seat> seats = getSeats(selectedMovie.getRoom(), selectedDate.getMovieDate(), selectedTime.getMovieTime());
 
         TableLayout layout = (TableLayout) findViewById(R.id.tableLayout);
+        TableLayout.LayoutParams rowLp = new TableLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                1.0f);
+        TableRow.LayoutParams cellLp = new TableRow.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                1.0f);
 
         TableRow tableRow = null;
         int oldSeatRow = 0;
@@ -106,7 +114,7 @@ public class SeatsActivity extends AppCompatActivity {
                 else
                     btnSeat.setImageResource(R.mipmap.seat_front);
 
-                btnSeat.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT));
+               // btnSeat.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT));
                 btnSeat.setTag("seat_" + seat.getSeatRow() + seat.getSeatColumn());
                 btnSeat.setId(seat.getSeatRow() * 10 + seat.getSeatColumn());
 
@@ -141,10 +149,10 @@ public class SeatsActivity extends AppCompatActivity {
                         }
                     }
                 });
-                tableRow.addView(btnSeat);
+                tableRow.addView(btnSeat,cellLp);
             }
             if (seat.getSeatColumn() == 5)
-                layout.addView(tableRow);
+                layout.addView(tableRow,rowLp);
             oldSeatRow = seat.getSeatRow();
         }
     }
