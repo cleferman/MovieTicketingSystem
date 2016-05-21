@@ -11,40 +11,23 @@
     tools:context="app.ticketing.td.movieticketingsystem.activities.SeatsActivity">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/seatsTitle"
         android:id="@+id/textView2"
+        android:textSize="32dp"
+        android:gravity="center_horizontal"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
-
-    <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/tableLayout"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/textView2"
-        android:gravity="center">
-    </TableLayout>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Button"
-        android:id="@+id/button"
-        android:layout_below="@+id/tableLayout"
-        android:layout_alignRight="@+id/textView2"
-        android:layout_alignEnd="@+id/textView2"
-        android:layout_marginRight="107dp"
-        android:layout_marginEnd="107dp" />
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="BACK"
         android:id="@+id/Button_Back"
-        android:layout_alignBottom="@+id/button"
+        android:layout_alignTop="@+id/Button_Next"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -53,8 +36,28 @@
         android:layout_height="wrap_content"
         android:text="NEXT"
         android:id="@+id/Button_Next"
-        android:layout_alignBottom="@+id/button"
-        android:layout_alignRight="@+id/tableLayout"
-        android:layout_alignEnd="@+id/tableLayout" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/textView2"
+        android:layout_alignEnd="@+id/textView2" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:src="@mipmap/screen"
+        android:layout_below="@+id/textView2"
+        android:layout_centerHorizontal="true"
+        android:contentDescription="screen"
+        android:layout_marginTop="@dimen/abc_action_bar_content_inset_material" />
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/imageView"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/Button_Back"
+        android:orientation="horizontal"
+        android:id="@+id/tableLayout"
+        android:layout_marginTop="@dimen/abc_action_bar_content_inset_material"></TableLayout>
 
 </RelativeLayout>

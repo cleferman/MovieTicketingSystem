@@ -104,7 +104,7 @@ public class SeatsActivity extends AppCompatActivity {
         for (final Seat seat : seats) {
             if (oldSeatRow != seat.getSeatRow()) {
                 tableRow = new TableRow(this);
-                tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT));
+                tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
             }
             if (seat.getSeatColumn() <= 5) {
                 final boolean isSeatTaken = seat.isTaken();
