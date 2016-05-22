@@ -36,6 +36,7 @@ public class SeatsActivity extends AppCompatActivity {
     public final static String SELECTED_SEATS = "app.ticketing.td.movieticketingsystem.SELECTED_SEATS";
 
     private ArrayList<Seat> selectedSeats = new ArrayList<Seat>();
+    private boolean roomBusy = true;
     private Button Button_Back;
     private Button Button_Next;
 
@@ -65,14 +66,9 @@ public class SeatsActivity extends AppCompatActivity {
         Button_Next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(roomBusy)
+                    return;
                 if (selectedSeats.size() > 0) {
-                    AsyncTask.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            updateSeats(selectedSeats);
-                        }
-                    });
-
                     Intent intent = new Intent(SeatsActivity.this, ConfirmationActivity.class);
                     intent.putParcelableArrayListExtra(SELECTED_SEATS, selectedSeats);
                     intent.putExtra(MainActivity.SELECTED_CINEMA, selectedCinema);
@@ -81,9 +77,8 @@ public class SeatsActivity extends AppCompatActivity {
                     intent.putExtra(MoviesActivity.SELECTED_TIME, selectedTime);
                     startActivity(intent);
                 }
-                else {
+                else
                     Toast.makeText(SeatsActivity.this, "Please select at least a seat.", Toast.LENGTH_LONG).show();
-                }
             }
         });
 
@@ -102,6 +97,9 @@ public class SeatsActivity extends AppCompatActivity {
         TableRow tableRow = null;
         int oldSeatRow = 0;
         for (final Seat seat : seats) {
+            if(!seat.isTaken()) {
+                roomBusy = false;
+            }
             if (oldSeatRow != seat.getSeatRow()) {
                 tableRow = new TableRow(this);
                 tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
@@ -155,6 +153,9 @@ public class SeatsActivity extends AppCompatActivity {
                 layout.addView(tableRow,rowLp);
             oldSeatRow = seat.getSeatRow();
         }
+        if(roomBusy){
+            Toast.makeText(SeatsActivity.this, "Room is full, please choose another one.", Toast.LENGTH_LONG).show();
+        }
     }
 
     //region PRIVATE MEMBERS
@@ -187,27 +188,6 @@ public class SeatsActivity extends AppCompatActivity {
         }
 
         return seats;
-    }
-
-    private void updateSeats(List<Seat> seats) {
-        Statement statement = ConnectionClass.GetStatement();
-        if (statement == null)
-            return;
-        for (Seat seat : seats) {
-            int binaryValue = (seat.isTaken()) ? 1 : 0;
-            String query = "UPDATE Seats SET IsTaken = " + binaryValue + " WHERE Id = " + seat.getId(); //SeatID to be added
-            try {
-                statement.executeUpdate(query);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        try {
-            statement.getConnection().close();
-            statement.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
     //endregion
 }
