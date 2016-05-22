@@ -5,8 +5,8 @@ android {
     buildToolsVersion "21.1.2"
     defaultConfig {
         applicationId "app.ticketing.td.movieticketingsystem"
-        minSdkVersion 23
-        targetSdkVersion 23
+        minSdkVersion 22
+        targetSdkVersion 22
         versionCode 1
         versionName "1.0"
     }
