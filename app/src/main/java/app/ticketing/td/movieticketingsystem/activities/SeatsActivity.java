@@ -6,9 +6,12 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.Toast;
@@ -33,6 +36,7 @@ public class SeatsActivity extends AppCompatActivity {
     public final static String SELECTED_SEATS = "app.ticketing.td.movieticketingsystem.SELECTED_SEATS";
 
     private ArrayList<Seat> selectedSeats = new ArrayList<Seat>();
+    private boolean roomBusy = true;
     private Button Button_Back;
     private Button Button_Next;
 
@@ -62,14 +66,9 @@ public class SeatsActivity extends AppCompatActivity {
         Button_Next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(roomBusy)
+                    return;
                 if (selectedSeats.size() > 0) {
-                    AsyncTask.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            updateSeats(selectedSeats);
-                        }
-                    });
-
                     Intent intent = new Intent(SeatsActivity.this, ConfirmationActivity.class);
                     intent.putParcelableArrayListExtra(SELECTED_SEATS, selectedSeats);
                     intent.putExtra(MainActivity.SELECTED_CINEMA, selectedCinema);
@@ -78,24 +77,32 @@ public class SeatsActivity extends AppCompatActivity {
                     intent.putExtra(MoviesActivity.SELECTED_TIME, selectedTime);
                     startActivity(intent);
                 }
-                else {
+                else
                     Toast.makeText(SeatsActivity.this, "Please select at least a seat.", Toast.LENGTH_LONG).show();
-                }
             }
         });
 
         List<Seat> seats = getSeats(selectedMovie.getRoom(), selectedDate.getMovieDate(), selectedTime.getMovieTime());
 
         TableLayout layout = (TableLayout) findViewById(R.id.tableLayout);
+        TableLayout.LayoutParams rowLp = new TableLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                1.0f);
+        TableRow.LayoutParams cellLp = new TableRow.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                1.0f);
 
         TableRow tableRow = null;
         int oldSeatRow = 0;
         for (final Seat seat : seats) {
-            if (seat.getSeatColumn() == 5)
-                layout.addView(tableRow);
+            if(!seat.isTaken()) {
+                roomBusy = false;
+            }
             if (oldSeatRow != seat.getSeatRow()) {
                 tableRow = new TableRow(this);
-                tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT));
+                tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
             }
             if (seat.getSeatColumn() <= 5) {
                 final boolean isSeatTaken = seat.isTaken();
@@ -105,7 +112,7 @@ public class SeatsActivity extends AppCompatActivity {
                 else
                     btnSeat.setImageResource(R.mipmap.seat_front);
 
-                btnSeat.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT));
+               // btnSeat.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT));
                 btnSeat.setTag("seat_" + seat.getSeatRow() + seat.getSeatColumn());
                 btnSeat.setId(seat.getSeatRow() * 10 + seat.getSeatColumn());
 
@@ -115,14 +122,13 @@ public class SeatsActivity extends AppCompatActivity {
 
                     @Override
                     public void onClick(View view) {
-                        btnSeat.getId();
                         if (isTaken) {
                             return;
                         }
                         if (!isTemporarySelected) {
                             seat.setTaken(true);
                             if (selectedSeats.size() == 0) {
-                                selectedSeats.add(seat);
+                                    selectedSeats.add(seat);
                             }
                             boolean isDifferentSeat = false;
                             for (int i = 0; i < selectedSeats.size(); i++) {
@@ -141,9 +147,14 @@ public class SeatsActivity extends AppCompatActivity {
                         }
                     }
                 });
-                tableRow.addView(btnSeat);
+                tableRow.addView(btnSeat,cellLp);
             }
+            if (seat.getSeatColumn() == 5)
+                layout.addView(tableRow,rowLp);
             oldSeatRow = seat.getSeatRow();
+        }
+        if(roomBusy){
+            Toast.makeText(SeatsActivity.this, "Room is full, please choose another one.", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -177,27 +188,6 @@ public class SeatsActivity extends AppCompatActivity {
         }
 
         return seats;
-    }
-
-    private void updateSeats(List<Seat> seats) {
-        Statement statement = ConnectionClass.GetStatement();
-        if (statement == null)
-            return;
-        for (Seat seat : seats) {
-            int binaryValue = (seat.isTaken()) ? 1 : 0;
-            String query = "UPDATE Seats SET IsTaken = " + binaryValue + " WHERE Id = " + seat.getId(); //SeatID to be added
-            try {
-                statement.executeUpdate(query);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        try {
-            statement.getConnection().close();
-            statement.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
     //endregion
 }
