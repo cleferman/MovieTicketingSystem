@@ -106,7 +106,7 @@ public class ConfirmationActivity extends AppCompatActivity {
                     try {
                         if (m.send()) {
                             Toast.makeText(ConfirmationActivity.this, "Email was sent successfully.", Toast.LENGTH_LONG).show();
-                            Button_Back.setVisibility(View.INVISIBLE);
+                            Button_Back.setVisibility(View.GONE);
                             Button_Exit.setVisibility(View.VISIBLE);
                         } else {
                             Toast.makeText(ConfirmationActivity.this, "Email was not sent.", Toast.LENGTH_LONG).show();
