@@ -15,8 +15,8 @@
         android:text="Confirm"
         android:id="@+id/Button_Confirm"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="54dp" />
+        android:layout_alignRight="@+id/EditText_Email"
+        android:layout_alignEnd="@+id/EditText_Email" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -53,5 +53,14 @@
         android:layout_alignParentStart="true"
         android:textSize="22dp"
         android:textColor="@color/abc_input_method_navigation_guard" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        android:id="@+id/Button_Back"
+        android:layout_below="@+id/EditText_Email"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>
