@@ -32,6 +32,8 @@ import app.ticketing.td.movieticketingsystem.models.MovieDate;
 import app.ticketing.td.movieticketingsystem.models.MovieTime;
 import app.ticketing.td.movieticketingsystem.models.Seat;
 
+import static app.ticketing.td.movieticketingsystem.R.mipmap.seat_front;
+
 public class SeatsActivity extends AppCompatActivity {
     public final static String SELECTED_SEATS = "app.ticketing.td.movieticketingsystem.SELECTED_SEATS";
 
@@ -108,9 +110,9 @@ public class SeatsActivity extends AppCompatActivity {
                 final boolean isSeatTaken = seat.isTaken();
                 final ImageButton btnSeat = new ImageButton(this);
                 if (isSeatTaken)
-                    btnSeat.setImageResource(R.drawable.common_ic_googleplayservices);
+                    btnSeat.setImageResource(R.mipmap.seat_front_taken);
                 else
-                    btnSeat.setImageResource(R.mipmap.seat_front);
+                    btnSeat.setImageResource(seat_front);
 
                // btnSeat.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT));
                 btnSeat.setTag("seat_" + seat.getSeatRow() + seat.getSeatColumn());
@@ -137,11 +139,11 @@ public class SeatsActivity extends AppCompatActivity {
                             if(isDifferentSeat)
                                 selectedSeats.add(seat);
 
-                            btnSeat.setImageResource(R.drawable.common_ic_googleplayservices);
+                            btnSeat.setImageResource(R.mipmap.seat_front_selected);
                             isTemporarySelected = true;
                         } else {
                             seat.setTaken(false);
-                            btnSeat.setImageResource(R.mipmap.seat_front);
+                            btnSeat.setImageResource(seat_front);
                             selectedSeats.remove(seat);
                             isTemporarySelected = false;
                         }

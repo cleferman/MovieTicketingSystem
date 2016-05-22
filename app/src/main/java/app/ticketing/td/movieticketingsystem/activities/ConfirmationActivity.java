@@ -26,8 +26,15 @@ import app.ticketing.td.movieticketingsystem.models.Seat;
 
 public class ConfirmationActivity extends AppCompatActivity {
 
+    //region KEYS
+    public final static String SELECTED_MOVIE = "app.ticketing.td.movieticketingsystem.SELECTED_MOVIE";
+    public final static String SELECTED_DATE = "app.ticketing.td.movieticketingsystem.SELECTED_DATE";
+    public final static String SELECTED_TIME = "app.ticketing.td.movieticketingsystem.SELECTED_TIME";
+    //endregion
+
     private static final int ticketCost = 15;
     private Button Button_Confirm;
+    private Button Button_Back;
     private TextView TextView_Confirmation;
     private EditText EditText_Email;
 
@@ -39,13 +46,15 @@ public class ConfirmationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_confirmation);
 
         Intent intent = getIntent();
+
         final ArrayList<Seat> selectedSeats = intent.getParcelableArrayListExtra(SeatsActivity.SELECTED_SEATS);
-        Cinema selectedCinema = intent.getParcelableExtra(MainActivity.SELECTED_CINEMA);
-        Movie selectedMovie = intent.getParcelableExtra(MoviesActivity.SELECTED_MOVIE);
-        MovieDate selectedDate = intent.getParcelableExtra(MoviesActivity.SELECTED_DATE);
-        MovieTime selectedTime = intent.getParcelableExtra(MoviesActivity.SELECTED_TIME);
+        final Cinema selectedCinema = intent.getParcelableExtra(MainActivity.SELECTED_CINEMA);
+        final Movie selectedMovie = intent.getParcelableExtra(MoviesActivity.SELECTED_MOVIE);
+        final MovieDate selectedDate = intent.getParcelableExtra(MoviesActivity.SELECTED_DATE);
+        final MovieTime selectedTime = intent.getParcelableExtra(MoviesActivity.SELECTED_TIME);
 
         Button_Confirm = (Button) findViewById(R.id.Button_Confirm);
+        Button_Back = (Button) findViewById(R.id.Button_Back);
         TextView_Confirmation = (TextView) findViewById(R.id.TextView_Confirmation);
         EditText_Email = (EditText) findViewById(R.id.EditText_Email);
 
@@ -77,6 +86,19 @@ public class ConfirmationActivity extends AppCompatActivity {
                     Toast.makeText(ConfirmationActivity.this, "The e-mail you entered is not valid.", Toast.LENGTH_LONG).show();
                     return;
                 }
+            }
+        });
+        Button_Back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(ConfirmationActivity.this, SeatsActivity.class);
+                intent.putExtra(SELECTED_MOVIE, selectedMovie);
+                intent.putExtra(SELECTED_DATE, selectedDate);
+                intent.putExtra(SELECTED_TIME, selectedTime);
+                intent.putExtra(MainActivity.SELECTED_CINEMA, selectedCinema);
+                startActivity(intent);
+                finish();
             }
         });
     }
