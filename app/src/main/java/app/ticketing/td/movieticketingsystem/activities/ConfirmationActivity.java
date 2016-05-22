@@ -1,6 +1,7 @@
 package app.ticketing.td.movieticketingsystem.activities;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,9 +10,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.*;
 
+import app.ticketing.td.movieticketingsystem.ConnectionClass;
 import app.ticketing.td.movieticketingsystem.R;
 import app.ticketing.td.movieticketingsystem.models.Cinema;
 import app.ticketing.td.movieticketingsystem.models.Movie;
@@ -34,7 +39,7 @@ public class ConfirmationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_confirmation);
 
         Intent intent = getIntent();
-        ArrayList<Seat> selectedSeats = intent.getParcelableArrayListExtra(SeatsActivity.SELECTED_SEATS);
+        final ArrayList<Seat> selectedSeats = intent.getParcelableArrayListExtra(SeatsActivity.SELECTED_SEATS);
         Cinema selectedCinema = intent.getParcelableExtra(MainActivity.SELECTED_CINEMA);
         Movie selectedMovie = intent.getParcelableExtra(MoviesActivity.SELECTED_MOVIE);
         MovieDate selectedDate = intent.getParcelableExtra(MoviesActivity.SELECTED_DATE);
@@ -60,8 +65,12 @@ public class ConfirmationActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if(emailValidation())
                 {
-                    // Update the taken seats;
-                    // Send confirmation e-mail;
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            updateSeats(selectedSeats);
+                        }
+                    });
                 }
                 else
                 {
@@ -71,7 +80,7 @@ public class ConfirmationActivity extends AppCompatActivity {
             }
         });
     }
-
+    //region PRIVATE MEMBERS
     private boolean emailValidation()
     {
         // Simple expression to find whether or not the input is a valid e-mail address
@@ -87,5 +96,25 @@ public class ConfirmationActivity extends AppCompatActivity {
         }
     }
 
-
+    private void updateSeats(List<Seat> seats) {
+        Statement statement = ConnectionClass.GetStatement();
+        if (statement == null)
+            return;
+        for (Seat seat : seats) {
+            int binaryValue = (seat.isTaken()) ? 1 : 0;
+            String query = "UPDATE Seats SET IsTaken = " + binaryValue + " WHERE Id = " + seat.getId(); //SeatID to be added
+            try {
+                statement.executeUpdate(query);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            statement.getConnection().close();
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    //endregion
 }
