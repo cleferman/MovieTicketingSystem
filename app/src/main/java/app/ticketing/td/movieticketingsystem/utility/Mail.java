@@ -109,15 +109,6 @@ public class Mail extends javax.mail.Authenticator {
         }
     }
 
-    public void addAttachment(String filename) throws Exception {
-        BodyPart messageBodyPart = new MimeBodyPart();
-        DataSource source = new FileDataSource(filename);
-        messageBodyPart.setDataHandler(new DataHandler(source));
-        messageBodyPart.setFileName(filename);
-
-        _multipart.addBodyPart(messageBodyPart);
-    }
-
     @Override
     public PasswordAuthentication getPasswordAuthentication() {
         return new PasswordAuthentication(_user, _pass);
@@ -144,7 +135,7 @@ public class Mail extends javax.mail.Authenticator {
         return props;
     }
 
-    // the getters and setters
+    //region the getters and setters
     public String getBody() {
         return _body;
     }
@@ -165,5 +156,5 @@ public class Mail extends javax.mail.Authenticator {
         this._subject = subject;
     }
 
-    // more of the getters and setters …..
+    //endregion
 }

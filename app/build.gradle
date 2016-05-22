@@ -21,13 +21,13 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.3.0'
     compile 'com.android.support:design:23.3.0'
     compile files('libs/jtds-1.3.1.jar')
     compile 'com.google.android.gms:play-services-appindexing:8.1.0'
-    compile files('libs/activation (1).jar')
-    compile files('libs/additionnal (1).jar')
-    compile files('libs/mail (1).jar')
+    compile files('libs/activation.jar')
+    compile files('libs/additionnal.jar')
+    compile files('libs/mail.jar')
 }
