@@ -114,7 +114,6 @@ public class SeatsActivity extends AppCompatActivity {
                 else
                     btnSeat.setImageResource(seat_front);
 
-               // btnSeat.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT));
                 btnSeat.setTag("seat_" + seat.getSeatRow() + seat.getSeatColumn());
                 btnSeat.setId(seat.getSeatRow() * 10 + seat.getSeatColumn());
 

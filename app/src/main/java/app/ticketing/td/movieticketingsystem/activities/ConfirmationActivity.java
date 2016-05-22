@@ -1,6 +1,5 @@
 package app.ticketing.td.movieticketingsystem.activities;
 
-import android.app.Application;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
@@ -21,16 +20,12 @@ import java.util.List;
 import java.util.Properties;
 import java.util.regex.*;
 
-import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 
 import app.ticketing.td.movieticketingsystem.ConnectionClass;
 import app.ticketing.td.movieticketingsystem.R;
@@ -47,6 +42,7 @@ public class ConfirmationActivity extends AppCompatActivity {
     public final static String SELECTED_MOVIE = "app.ticketing.td.movieticketingsystem.SELECTED_MOVIE";
     public final static String SELECTED_DATE = "app.ticketing.td.movieticketingsystem.SELECTED_DATE";
     public final static String SELECTED_TIME = "app.ticketing.td.movieticketingsystem.SELECTED_TIME";
+    private final static String EMAIL_ADDRESS = "proiecttransmisiadatelor@gmail.com";
     //endregion
 
     private static final int ticketCost = 15;
@@ -99,15 +95,13 @@ public class ConfirmationActivity extends AppCompatActivity {
                         }
                     });
 
-
                     Mail m = new Mail("proiecttransmisiadatelor@gmail.com", "transmisiadatelor");
 
                     String[] toArr = {EditText_Email.getText().toString()};
                     m.setTo(toArr);
-                    m.setFrom("proiecttransmisiadatelor@gmail.com");
+                    m.setFrom(EMAIL_ADDRESS);
                     m.setSubject("Thank you for purchasing!");
                     m.setBody(getMessageBody(selectedSeats, selectedCinema, selectedMovie, selectedDate, selectedTime));
-
 
                     try {
                         if (m.send()) {
@@ -118,7 +112,6 @@ public class ConfirmationActivity extends AppCompatActivity {
                             Toast.makeText(ConfirmationActivity.this, "Email was not sent.", Toast.LENGTH_LONG).show();
                         }
                     } catch (Exception e) {
-                        //Toast.makeText(MailApp.this, "There was a problem sending the email.", Toast.LENGTH_LONG).show();
                         Log.e("MailApp", "Could not send email", e);
                     }
 
@@ -129,6 +122,7 @@ public class ConfirmationActivity extends AppCompatActivity {
                 }
             }
         });
+
         Button_Back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -144,6 +138,7 @@ public class ConfirmationActivity extends AppCompatActivity {
         });
     }
 
+    //region PRIVATE MEMBERS
     @NonNull
     private String getMessageBody(ArrayList<Seat> selectedSeats, Cinema selectedCinema, Movie selectedMovie, MovieDate selectedDate, MovieTime selectedTime) {
         return "\n\n" + "Cinema: " + selectedCinema +
@@ -154,48 +149,6 @@ public class ConfirmationActivity extends AppCompatActivity {
                 "\n" + "Selected Seat(s): " + selectedSeatsString +
                 "\n\n" + "Total Cost: " + selectedSeats.size() * ticketCost + " RON";
     }
-    //region PRIVATE MEMBERS
-
-    private void sendMail(String emailAddress) throws MessagingException {
-        String host = "smtp.gmail.com";
-        String password = "transmisiadatelor";
-        String from = "proiecttransmisiadatelor@gmail.com";
-        InternetAddress toAddress = null;
-
-        try {
-            toAddress = new InternetAddress(emailAddress, emailAddress);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        //String filename = Environment.getExternalStorageDirectory() + "/jam.jpg";
-
-        Properties properties = System.getProperties();
-        properties.put("mail.smtp.auth", "true");
-        properties.put("mail.smtp.starttls.enable", "true");
-        properties.put("mail.smtp.host", "smtp.gmail.com");
-        properties.put("mail.smtp.port", "587");
-
-        Session session = Session.getInstance(properties, null);
-
-        Message message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(from));
-
-
-        message.addRecipient(Message.RecipientType.TO, toAddress);
-
-
-        message.setSubject("Anti-Theft Attachment");
-
-        message.setText("Mesaj mail");
-
-        Transport.send(message);
-    }
-
-       /* try {
-            message.setText("mesaj");
-        } catch(MessagingException f){}
-*/
-
 
     private boolean emailValidation() {
         // Simple expression to find whether or not the input is a valid e-mail address
